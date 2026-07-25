@@ -1,0 +1,2 @@
+* For fixing dirty drive on crash in windows
+Repair-Volume -DriveLetter D -OfflineScanAndFix
