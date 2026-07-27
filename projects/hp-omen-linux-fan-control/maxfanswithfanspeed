@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=Max Fan
+Exec=konsole --hold -e fish /home/ayush/Desktop/maxfans.fish
+Terminal=false
+Icon=utilities-terminal
