@@ -1,2 +1,67 @@
 * For fixing dirty drive on crash in windows
 Repair-Volume -DriveLetter D -OfflineScanAndFix
+
+
+
+# ============================================
+# Bazzite / HP OMEN Performance & Gaming Checks
+# ============================================
+
+
+# ============================================
+# 1. PERFORMANCE MODE CHECK
+# ============================================
+
+systemctl is-active nvidia-powerd
+systemctl is-active omen-performance.service
+nvidia-smi -q -d POWER | grep -E "Current Power Limit|Default Power Limit|Max Power Limit"
+cat /sys/devices/virtual/powercap/intel-rapl-mmio/intel-rapl-mmio:0/constraint_0_power_limit_uw
+
+ ============================================
+# 2. FAN CONTROL
+# ============================================
+
+# Fan max
+echo 0 | sudo tee "$(dirname "$(find /sys/devices/platform/hp-wmi/hwmon -type f -name name -exec grep -l '^hp$' {} \; | head -1)")/pwm1_enable"
+
+
+# Fan automatic but Linux limits to 4000
+# That's why max while gaming is required
+echo 2 | sudo tee "$(dirname "$(find /sys/devices/platform/hp-wmi/hwmon -type f -name name -exec grep -l '^hp$' {} \; | head -1)")/pwm1_enable"
+
+
+# ============================================
+# 3. APPLY CPU PERFORMANCE MODE
+# ============================================
+
+echo 130000000 | sudo tee /sys/devices/virtual/powercap/intel-rapl-mmio/intel-rapl-mmio:0/constraint_0_power_limit_uw
+
+cat /sys/devices/virtual/powercap/intel-rapl-mmio/intel-rapl-mmio:0/constraint_0_power_limit_uw
+
+# ============================================
+# 4. AFTER EVERY REBOOT
+# ============================================
+
+systemctl status nvidia-powerd --no-pager
+
+# If it says:
+#
+# Active: active (running)
+#
+# then your RTX 4070 Dynamic Boost setup is working.
+
+
+# If it says:
+#
+# Active: inactive (dead)
+#
+# run:
+
+nvidia-smi -q -d POWER | grep -E "Current Power Limit|Requested Power Limit|Default Power Limit|Max Power Limit"
+
+
+# Persistent Bazzite override:
+#
+# /etc/systemd/system/nvidia-powerd.service.d/override.conf
+#
+# It won't modify the immutable /usr system and should survive Bazzite updates.
