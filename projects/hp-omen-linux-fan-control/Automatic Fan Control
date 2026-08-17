@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Automatic Fan Control
+Comment=CPU/GPU temperature based HP OMEN fan control
+Exec=fish -c "$HOME/.local/bin/fan-curve.fish"
+Icon=utilities-system-monitor
+Terminal=true
+Categories=Utility;
